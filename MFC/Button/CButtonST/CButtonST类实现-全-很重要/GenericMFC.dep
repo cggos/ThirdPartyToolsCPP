@@ -1,0 +1,119 @@
+# Microsoft Developer Studio Generated Dependency File, included by GenericMFC.mak
+
+.\BkDialogST.cpp : \
+	".\BkDialogST.h"\
+	
+
+.\BtnST.cpp : \
+	".\BtnST.h"\
+	
+
+.\DlgPage01.cpp : \
+	".\DlgPage01.h"\
+	".\GenericMFC.h"\
+	".\ListBoxST.h"\
+	
+
+.\DlgPage02.cpp : \
+	".\DlgPage02.h"\
+	".\GenericMFC.h"\
+	".\TransparentStaticST.h"\
+	
+
+.\GenericMFC.cpp : \
+	".\BkDialogST.h"\
+	".\BtnST.h"\
+	".\DlgAbout.h"\
+	".\DlgPage01.h"\
+	".\DlgPage02.h"\
+	".\GenericMFC.h"\
+	".\GenericMFCDlg.h"\
+	".\HyperLink.h"\
+	".\ListBoxST.h"\
+	".\PageManagerEx1ST.h"\
+	".\PageManagerST.h"\
+	".\ThemeHelperST.h"\
+	".\TransparentStaticST.h"\
+	".\XPStyleButtonST.h"\
+	
+
+.\GenericMFC.rc : \
+	".\res\About.ico"\
+	".\res\Background.bmp"\
+	".\res\Button_In.bmp"\
+	".\res\Button_Out.bmp"\
+	".\res\Face.bmp"\
+	".\res\GenericMFC.ico"\
+	".\res\GenericMFC.rc2"\
+	".\res\No3_32x32x256.ico"\
+	".\res\Page01.ico"\
+	".\res\Page02.ico"\
+	".\res\Shell32_005.ico"\
+	".\res\Shell32_110.ico"\
+	".\res\Shell32_131.ico"\
+	".\res\Shell32_137.ico"\
+	".\res\Shell32_141.ico"\
+	".\res\Shell32_203.ico"\
+	".\res\STLogo_Small.bmp"\
+	
+
+.\GenericMFCDlg.cpp : \
+	".\BkDialogST.h"\
+	".\BtnST.h"\
+	".\DlgAbout.h"\
+	".\DlgPage01.h"\
+	".\DlgPage02.h"\
+	".\GenericMFC.h"\
+	".\GenericMFCDlg.h"\
+	".\HyperLink.h"\
+	".\ListBoxST.h"\
+	".\PageManagerEx1ST.h"\
+	".\PageManagerST.h"\
+	".\ThemeHelperST.h"\
+	".\TransparentStaticST.h"\
+	".\XPStyleButtonST.h"\
+	
+
+.\HyperLink.cpp : \
+	".\HyperLink.h"\
+	
+
+.\ListBoxST.cpp : \
+	".\ListBoxST.h"\
+	
+
+.\PageManagerEx1ST.cpp : \
+	".\PageManagerEx1ST.h"\
+	".\PageManagerST.h"\
+	
+
+.\PageManagerST.cpp : \
+	".\PageManagerST.h"\
+	
+
+.\StdAfx.cpp : \
+	"..\..\..\..\..\program files\microsoft sdk\include\basetsd.h"\
+	"..\..\..\..\..\program files\microsoft sdk\include\guiddef.h"\
+	"..\..\..\..\..\program files\microsoft sdk\include\propidl.h"\
+	"..\..\..\..\..\program files\microsoft sdk\include\reason.h"\
+	"..\..\..\..\..\program files\microsoft sdk\include\shldisp.h"\
+	"..\..\..\..\..\program files\microsoft sdk\include\shobjidl.h"\
+	"..\..\..\..\..\program files\microsoft sdk\include\shtypes.h"\
+	"..\..\..\..\..\program files\microsoft sdk\include\stralign.h"\
+	"..\..\..\..\..\program files\microsoft sdk\include\tvout.h"\
+	".\StdAfx.h"\
+	
+
+.\ThemeHelperST.cpp : \
+	".\ThemeHelperST.h"\
+	
+
+.\TransparentStaticST.cpp : \
+	".\TransparentStaticST.h"\
+	
+
+.\XPStyleButtonST.cpp : \
+	".\BtnST.h"\
+	".\ThemeHelperST.h"\
+	".\XPStyleButtonST.h"\
+	

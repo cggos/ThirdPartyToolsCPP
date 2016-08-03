@@ -1,0 +1,31 @@
+Disclaimer
+----------
+THIS SOFTWARE AND THE ACCOMPANYING FILES ARE DISTRIBUTED "AS IS" AND WITHOUT
+ANY WARRANTIES WHETHER EXPRESSED OR IMPLIED. NO REPONSIBILITIES FOR POSSIBLE
+DAMAGES OR EVEN FUNCTIONALITY CAN BE TAKEN. THE USER MUST ASSUME THE ENTIRE
+RISK OF USING THIS SOFTWARE.
+
+Terms of use
+------------
+In the past years SoftechSoftware has produced many free controls and code snippets.
+All of this products were released with the full source codes included and hundreds of developers
+all around the world have taken benefits using these easy and ready to use controls into their applications.
+In return, SoftechSoftware asked only for a small money donation from developers. Unfortunately only a very limited
+number of donations has been received from the large number of users that rely on SoftechSoftware products for their applications.
+Producing and updating good software costs time. So it costs money. Also, maintaning a dedicated web site
+costs time and money.
+
+Starting from now on almost all SoftechSoftware products will be distributed into a single general use DLL. This DLL
+will show an annoying dialog each time your application starts. Also, this demo DLL has resource and memory leaks that make
+your target application unstable. You can use the demo DLL only for testing the SoftechSoftware product you are interested in.
+Then if you decide to use this product into your application you must buy the full DLL version directly from SoftechSoftware.
+
+SoftechSoftware DLL costs $100.00 (One hundred U.S. Dollars).
+
+    SoftechSoftware
+    Davide Calabro'
+    P.O. Box 65
+    21019 Somma Lombardo (VA)
+    Italy
+
+    http://www.softechsoftware.it
