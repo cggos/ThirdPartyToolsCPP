@@ -1,0 +1,105 @@
+Using the code
+Step 1 – Add these files to your project
+?GdipButton.h 
+?GdipButton.cpp 
+?MemDC.h 
+?CGdiPlusBitmap.h 
+?CMemDC is from Keith Rule and CGdiPlusBitmap.h is from Joe Woodbury. These are included in the source and demo packages. 
+Step 2 – Add resources, member variables, and images
+Add a button to your dialog box with the resource editor, set the resource ID, and erase the text in the Caption box. You could set the style to Owner Draw, but you don’t need to because the code will automatically set this style.
+
+Using the Class Wizard, add a variable to the ID you just created. In this example, I set the ID to IDC_PLAY, and the variable name to m_cPlay. Edit the dialog’s .h file, and change the control from CButton to CGdiButton. Don’t forget to include the file “GdipButton.h”.
+
+In the resource editor, import the .png file from the res folder and set the resource type to PNG. Using PNG is just convention, it can be anything as long as the code matches what you name it. Right click on IDR_PNG1, select Properties, and rename it to something useful, IDR_PLAY in this example.
+
+Step 3 – Add the LoadStdImage() function
+Now, we just need to load the image to the button on initialization. In the OnInitDialg() function, add the following code near the bottom:
+
+BOOL CTestGdipButtonDlg::OnInitDialog()
+{
+    CDialog::OnInitDialog();
+
+    /// a bunch of stuff here
+
+    m_cPlay.LoadStdImage(IDR_PLAY, _T("PNG"));
+
+    return TRUE; 
+}Step 4 – Build and Run
+You should be able to run it now and see your new PNG button! If it crashes here, it is probably because you didn’t initialize GDI+. Review the Background section of this article.
+
+The demo project
+This is all the code that is needed to create the buttons in the test program:
+
+// load the standard image and alternate image
+m_cPlay.LoadStdImage(IDR_PLAY, _T("PNG"));
+m_cPlay.LoadAltImage(IDR_PAUSE, _T("PNG"));
+m_cPlay.EnableToggle(TRUE);
+
+// just to show highlight state for article
+m_cPlayHi.LoadStdImage(IDR_PLAY, _T("PNG"));
+
+// set as disabled
+m_cPlayDis.LoadStdImage(IDR_PLAY, _T("PNG"));
+m_cPlayDis.EnableButton(FALSE);
+
+// show a larger button type
+m_cGear.LoadStdImage(IDR_GEAR, _T("PNG"));
+
+// replace the OK button with something
+m_cShutDn.LoadStdImage(IDR_EXIT, _T("PNG"));
+m_cShutDn.SetToolTipText(_T("Close Program"));Both the VC6 and VS2005 versions are included in the demo project.
+
+Issues with transparent images
+The button control has no idea what the background beneath it should be; it gets this information from the bitmap associated with the current DC. In most cases, this works fine, the background is what is on the screen just before the control is painted. However, the application may not be the top most when it is launched. An always on top application like Task Manager may be in the way, so when it gets the background image, it is the wrong data. This is overcome by calling the SetBkGnd() function by the code that actually creates the background.
+
+Set all the button backgrounds in the parent’s OnEraseBkgnd() function. The demo program does this with the following code:
+
+BOOL CTestGdipButtonDlg::OnEraseBkgnd(CDC* pDC)
+{
+    CDialog::OnEraseBkgnd(pDC);
+    CRect rect;
+    GetClientRect(rect);
+
+    CMemDC pDevC(pDC, rect);
+
+    // fill in the back ground with something
+
+    SetButtonBackGrounds(pDevC);
+
+    return TRUE;
+}
+
+void CTestGdipButtonDlg::SetButtonBackGrounds(CDC *pDC)
+{
+    m_cPlay.SetBkGnd(pDC);
+    m_cPlayHi.SetBkGnd(pDC);
+    m_cPlayDis.SetBkGnd(pDC);
+    m_cShutDn.SetBkGnd(pDC);
+}Since the DC that is passed is a memory DC, it doesn’t matter what other applications might be doing. The code above assumes you want to use something other than the crummy default background; otherwise, you would probably just use the default crummy button.
+
+VC6 Build issues
+VC6 needs a few extra things to compile correctly, add the following to your stdafx.h file. Also add the SDK include and lib paths to your environment.
+
+// VC6
+#if defined(_MSC_VER) && _MSC_VER == 1200
+
+#ifndef ULONG_PTR
+#define ULONG_PTR unsigned long*
+#endif
+#include <Specstrings.h>
+#include <gdiplus.h>
+
+#pragma comment(lib, "gdiplus.lib")
+using namespace Gdiplus;
+
+// VS2005
+#else 
+
+#include <gdiplus.h>
+#pragma comment(lib, "gdiplus.lib")
+using namespace Gdiplus;
+
+#endif发现问题：拿到该程序后，发现原始代码为了显示效果流畅，所需图片已经全部加载到了资源当中。而我需要的是从本地进行读取并显示。在CGdipButton类中怎加了如下函数：//==============================================================================BOOL CGdipButton::SetImage(LPCTSTR pFilePath)//=============================================================================={ m_pStdImage = new CGdiPlusBitmapResource; bool bIsSuccess = m_pStdImage->LoadFromFile(pFilePath); CRect rect; //GetClientRect(rect); GetWindowRect(rect); float width = (float)m_pStdImage->m_pBitmap->GetWidth(); float height = (float)m_pStdImage->m_pBitmap->GetHeight(); MoveWindow(rect.left, rect.top, width, height);// return bIsSuccess;}对CGdiPlusBitmap也进行了修改：class CGdiPlusBitmap{public: Gdiplus::Bitmap* m_pBitmap;public: CGdiPlusBitmap()         { m_pBitmap = NULL; } CGdiPlusBitmap(LPCWSTR pFile)      { m_pBitmap = NULL; LoadFromFile(pFile); } virtual ~CGdiPlusBitmap()       { Empty(); } void Empty()          { delete m_pBitmap; m_pBitmap = NULL; } operator Gdiplus::Bitmap*() const     { return m_pBitmap; } bool LoadFromFile(LPCWSTR pFile) {    Empty();    m_pBitmap = Gdiplus::Bitmap::FromFile(pFile);    return m_pBitmap->GetLastStatus() == Gdiplus::Ok;; }};对于从文件中读取的图像格式，在显示上有问题。需要对CGdipButton::CtlColor(CDC* pScreenDC, UINT nCtlColor)函数部分位置进行修正。//=============================================================================//// The framework calls this member function when a child control is about to // be drawn.  All the bitmaps are created here on the first call. Every thing// is done with a memory DC except the background, which get's it's information // from the parent. The background is needed for transparent portions of PNG // images. An always on top app (such as Task Manager) that is in the way can // cause it to get an incorrect background.  To avoid this, the parent should // call the SetBkGnd function with a memory DC when it creates the background.//    //=============================================================================HBRUSH CGdipButton::CtlColor(CDC* pScreenDC, UINT nCtlColor) { if(!m_bHaveBitmaps) {   if(!m_pStdImage)   {    return NULL; // Load the standard image with LoadStdImage()   }   CBitmap bmp, *pOldBitmap;   CRect rect;   GetClientRect(rect);   // do everything with mem dc   CMemDC pDC(pScreenDC, rect);   Gdiplus::Graphics graphics(pDC->m_hDC);   // background   if (m_dcBk.m_hDC == NULL)   {    CRect rect1;    CClientDC clDC(GetParent());    GetWindowRect(rect1);    GetParent()->ScreenToClient(rect1);    m_dcBk.CreateCompatibleDC(&clDC);    bmp.CreateCompatibleBitmap(&clDC, rect.Width(), rect.Height());    pOldBitmap = m_dcBk.SelectObject(&bmp);    m_dcBk.BitBlt(0, 0, rect.Width(), rect.Height(), &clDC, rect1.left, rect1.top, SRCCOPY);    bmp.DeleteObject();   }   // standard image   if (m_dcStd.m_hDC == NULL)   {    PaintBk(pDC);    graphics.DrawImage(*m_pStdImage, 0, 0);      m_dcStd.CreateCompatibleDC(pDC);    bmp.CreateCompatibleBitmap(pDC, rect.Width(), rect.Height());    pOldBitmap = m_dcStd.SelectObject(&bmp);    m_dcStd.BitBlt(0, 0, rect.Width(), rect.Height(), pDC, 0, 0, SRCCOPY);    bmp.DeleteObject();    // standard image pressed    if (m_dcStdP.m_hDC == NULL)    {     PaintBk(pDC);          ColorMatrix GrayMat = { 0.30f, 0.30f, 0.30f, 0.00f, 0.00f,           0.59f, 0.59f, 0.59f, 0.00f, 0.00f,           0.11f, 0.11f, 0.11f, 0.00f, 0.00f,           0.00f, 0.00f, 0.00f, 1.00f, 0.00f,           0.00f, 0.00f, 0.00f, 0.00f, 1.00f };          /*     ColorMatrix GrayMat = { 0.30f, 0.30f, 0.30f, 0.00f, 0.00f,          0.30f, 0.30f, 0.30f, 0.00f, 0.00f,          0.11f, 0.11f, 0.11f, 0.00f, 0.00f,          0.00f, 0.00f, 0.00f, 1.00f, 0.00f,          0.00f, 0.00f, 0.00f, 0.00f, 1.00f };*/         ImageAttributes ia;     ia.SetColorMatrix(&GrayMat);     float width = (float)m_pStdImage->m_pBitmap->GetWidth();     float height = (float)m_pStdImage->m_pBitmap->GetHeight();     RectF grect; grect.X=0, grect.Y=0; grect.Width = width; grect.Height = height;     graphics.DrawImage(*m_pStdImage, grect, 0, 0, width, height, UnitPixel, &ia);     m_dcStdP.CreateCompatibleDC(pDC);     bmp.CreateCompatibleBitmap(pDC, rect.Width(), rect.Height());     pOldBitmap = m_dcStdP.SelectObject(&bmp);     m_dcStdP.BitBlt(0, 0, rect.Width(), rect.Height(), pDC, 0, 0, SRCCOPY);     bmp.DeleteObject();    }    // standard image hot    if(m_dcStdH.m_hDC == NULL)    {     PaintBk(pDC);     ColorMatrix HotMat = { 1.05f, 0.00f, 0.00f, 0.00f, 0.00f,           0.00f, 1.05f, 0.00f, 0.00f, 0.00f,           0.00f, 0.00f, 1.05f, 0.00f, 0.00f,           0.00f, 0.00f, 0.00f, 1.00f, 0.00f,           0.05f, 0.05f, 0.05f, 0.00f, 1.00f };     ImageAttributes ia;     ia.SetColorMatrix(&HotMat);     float width = (float)m_pStdImage->m_pBitmap->GetWidth();     float height = (float)m_pStdImage->m_pBitmap->GetHeight();     RectF grect; grect.X=0, grect.Y=0; grect.Width = width; grect.Height = height;     graphics.DrawImage(*m_pStdImage, grect, 0, 0, width, height, UnitPixel, &ia);     m_dcStdH.CreateCompatibleDC(pDC);     bmp.CreateCompatibleBitmap(pDC, rect.Width(), rect.Height());     pOldBitmap = m_dcStdH.SelectObject(&bmp);     m_dcStdH.BitBlt(0, 0, rect.Width(), rect.Height(), pDC, 0, 0, SRCCOPY);     bmp.DeleteObject();    }    // grayscale image    if(m_dcGS.m_hDC == NULL)    {     PaintBk(pDC);     ColorMatrix GrayMat = { 0.30f, 0.30f, 0.30f, 0.00f, 0.00f,           0.59f, 0.59f, 0.59f, 0.00f, 0.00f,           0.11f, 0.11f, 0.11f, 0.00f, 0.00f,           0.00f, 0.00f, 0.00f, 1.00f, 0.00f,           0.00f, 0.00f, 0.00f, 0.00f, 1.00f };     ImageAttributes ia;     ia.SetColorMatrix(&GrayMat);     float width = (float)m_pStdImage->m_pBitmap->GetWidth();     float height = (float)m_pStdImage->m_pBitmap->GetHeight();     RectF grect; grect.X=0, grect.Y=0; grect.Width = width; grect.Height = height;     graphics.DrawImage(*m_pStdImage, grect, 0, 0, width, height, UnitPixel, &ia);     m_dcGS.CreateCompatibleDC(pDC);     bmp.CreateCompatibleBitmap(pDC, rect.Width(), rect.Height());     pOldBitmap = m_dcGS.SelectObject(&bmp);     m_dcGS.BitBlt(0, 0, rect.Width(), rect.Height(), pDC, 0, 0, SRCCOPY);     bmp.DeleteObject();    }   }   // alternate image   if( (m_dcAlt.m_hDC == NULL) && m_bHaveAltImage )   {    PaintBk(pDC);    graphics.DrawImage(*m_pAltImage, 0, 0);      m_dcAlt.CreateCompatibleDC(pDC);    bmp.CreateCompatibleBitmap(pDC, rect.Width(), rect.Height());    pOldBitmap = m_dcAlt.SelectObject(&bmp);    m_dcAlt.BitBlt(0, 0, rect.Width(), rect.Height(), pDC, 0, 0, SRCCOPY);    bmp.DeleteObject();    // alternate image pressed    if( (m_dcAltP.m_hDC == NULL) && m_bHaveAltImage )    {     PaintBk(pDC);     graphics.DrawImage(*m_pAltImage, 1, 1);        m_dcAltP.CreateCompatibleDC(pDC);     bmp.CreateCompatibleBitmap(pDC, rect.Width(), rect.Height());     pOldBitmap = m_dcAltP.SelectObject(&bmp);     m_dcAltP.BitBlt(0, 0, rect.Width(), rect.Height(), pDC, 0, 0, SRCCOPY);     bmp.DeleteObject();    }    // alternate image hot    if(m_dcAltH.m_hDC == NULL)    {     PaintBk(pDC);     ColorMatrix HotMat = { 1.05f, 0.00f, 0.00f, 0.00f, 0.00f,           0.00f, 1.05f, 0.00f, 0.00f, 0.00f,           0.00f, 0.00f, 1.05f, 0.00f, 0.00f,           0.00f, 0.00f, 0.00f, 1.00f, 0.00f,           0.05f, 0.05f, 0.05f, 0.00f, 1.00f };     ImageAttributes ia;     ia.SetColorMatrix(&HotMat);     float width = (float)m_pStdImage->m_pBitmap->GetWidth();     float height = (float)m_pStdImage->m_pBitmap->GetHeight();     RectF grect; grect.X=0, grect.Y=0; grect.Width = width; grect.Height = height;     graphics.DrawImage(*m_pAltImage, grect, 0, 0, width, height, UnitPixel, &ia);     m_dcAltH.CreateCompatibleDC(pDC);     bmp.CreateCompatibleBitmap(pDC, rect.Width(), rect.Height());     pOldBitmap = m_dcAltH.SelectObject(&bmp);     m_dcAltH.BitBlt(0, 0, rect.Width(), rect.Height(), pDC, 0, 0, SRCCOPY);     bmp.DeleteObject();    }   }   if(m_pCurBtn == NULL)   {    m_pCurBtn = &m_dcStd;   }   m_bHaveBitmaps = TRUE; } return NULL;} 
+
+
+本文来自CSDN博客，转载请标明出处：http://blog.csdn.net/xelone/archive/2010/04/21/5510029.aspx

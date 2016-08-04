@@ -1,0 +1,146 @@
+一、前言
+
+由于PNG图片非常漂亮，如果能将其作为按钮的背景，将为增加应用程序的美观效果。要想让按钮显示PNG图片需要使用GDI+。在这里，使用GDI+将按钮显示PNG图片封装成了一个类，方便使用。
+
+二、CGdipButton类的使用
+
+下面通过一个基于对话框的演示程序来讲解如何使用CGdipButton类。
+1.创建一个工程
+
+建立一个工程，Projects选项卡中选择MFC AppWizard (exe)，工程名为GdiPngButtonDemo，下一步中选择Dialog based类型。
+
+2.设置GDI+路径
+
+应用GDI+必须用到GDI+头文件和库文件(该文件在附件中的GDI+文件夹下)，为了能编译通过必须设置GDI+路径，步骤如下：
+
+(1)选中tools菜单中的option子项。
+
+(2)选中Directories选项卡。
+
+(3)选中Show directries for列表框中选中include files项，并在Directories中添加GDI+头文件路径，GDI+头文件在GDI+下的Include文件夹下。
+
+(4)选中Show directries for列表框中选中Library files项，并在Directories中添加GDI+库文件路径，GDI+库文件在GDI+下的Lib文件夹下。
+
+(5)在预编译头文件StdAfx.h中包含GDI+头文件和库文件
+//宏定义ULONG_PTR指向无符号长整形指针在CGdipButton类中使用
+#ifndef ULONG_PTR
+#define ULONG_PTR unsigned long*
+#endif
+//包含GDI+头文件并链接库文件
+#include <gdiplus.h>
+#pragma comment(lib, "gdiplus.lib")
+//使用命名空间
+using namespace Gdiplus;
+
+(6)在BOOL CGdiPngButtonDemoApp::InitInstance()中初始化GDI+，代码如下：
+
+Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+Gdiplus::GdiplusStartup(&m_gdiplusToken, &gdiplusStartupInput, NULL);
+
+(7)在BOOL CGdiPngButtonDemoApp::ExitInstance()中卸载GDI+，代码如下：
+
+Gdiplus::GdiplusShutdown(m_gdiplusToken);
+
+3.导入CGdipButton类的文件
+
+与CGdipButton相关的文件有GdipButton.h，GdipButton.cpp,CGdiPlusBitmap.h
+导入步骤如下：选中Project菜单中的Add To Project，选中Files，找到上面的三个文件导入到工程中。
+
+4.在演示对话框的头文件GdiPngButtonDemo.h中包含GdipButton.h文件
+
+5.插入PNG图像资源，在res文件夹下
+
+6.在演示对话框中拖入五个按钮控件
+
+ID分别为，IDC_PLAY，IDC_PLAY2，IDC_PLAY3，IDC_GEAR，IDC_EXIT，为五个按钮关联CGdipButton类，
+
+关联步骤如下：
+//GdiPngButtonDemoDlg.h头文件
+class CGdiPngButtonDemoDlg : public CDialog
+{
+// Construction
+public:
+CGdiPngButtonDemoDlg(CWnd* pParent = NULL);
+// Dialog Data
+//{{AFX_DATA(CGdiPngButtonDemoDlg)
+enum { IDD = IDD_GDIPNGBUTTONDEMO_DIALOG };
+CGdipButton m_cGear;
+CGdipButton m_cPlayHi;
+CGdipButton m_cPlayDis;
+CGdipButton m_cShutDn;
+CGdipButton m_cPlay;
+       ......
+};
+复制代码
+//GdiPngButtonDemoDlg.cpp源文件
+void CGdiPngButtonDemoDlg::DoDataExchange(CDataExchange* pDX)
+{
+CDialog::DoDataExchange(pDX);
+//{{AFX_DATA_MAP(CGdiPngButtonDemoDlg)
+DDX_Control(pDX, IDC_GEAR, m_cGear);
+DDX_Control(pDX, IDC_PLAY2, m_cPlayHi);
+DDX_Control(pDX, IDC_PLAY3, m_cPlayDis);
+DDX_Control(pDX, IDC_EXIT, m_cShutDn);
+DDX_Control(pDX, IDC_PLAY, m_cPlay);
+//}}AFX_DATA_MAP
+}
+复制代码
+7.在OnInitDialog函数中初始化按钮控件
+//GdiPngButtonDemoDlg.cpp源文件
+BOOL CGdiPngButtonDemoDlg::OnInitDialog()
+{
+CDialog::OnInitDialog();
+......
+//初始化PNG按钮特性
+m_cPlay.LoadStdImage(IDR_PLAY, _T("PNG"));
+m_cPlay.LoadAltImage(IDR_PAUSE, _T("PNG"));
+m_cPlay.EnableToggle(TRUE);
+m_cPlayHi.LoadStdImage(IDR_PLAY, _T("PNG"));
+m_cPlayDis.LoadStdImage(IDR_PLAY, _T("PNG"));
+m_cPlayDis.EnableButton(FALSE);
+m_cGear.LoadStdImage(IDR_GEAR, _T("PNG"));
+m_cShutDn.LoadStdImage(IDR_EXIT, _T("PNG"));
+m_cShutDn.SetToolTipText(_T("Close Program"));
+       ......
+}
+复制代码
+8.对话框背景位图的显示(如果希望有背景位图，不希望可以省略此步)
+
+(1)导入文件MemDC.h
+
+(2)在GdiPngButtonDemoDlg.cpp源文件包含MemDC.h文件
+
+(3)在GdiPngButtonDemoDlg.h头文件中定义HBITMAP m_hBitmap;
+
+(4)在对户框OnInitDialog函数中获取背景位图句柄，代码如下：
+
+//GdiPngButtonDemoDlg.cpp源文件
+BOOL CGdiPngButtonDemoDlg::OnInitDialog()
+{
+CDialog::OnInitDialog();
+......
+//获取对话框背景位图的资源句柄
+HBITMAP hBitmap = NULL;
+HINSTANCE hInstResource = NULL;
+hInstResource = AfxFindResourceHandle(MAKEINTRESOURCE(IDB_BKGND), RT_BITMAP);
+m_hBitmap = (HBITMAP)::LoadImage(hInstResource, MAKEINTRESOURCE(IDB_BKGND), IMAGE_BITMAP, 0, 0, 0);
+       ......
+}
+复制代码
+(5)对话框响应WM_ERASEBKGND消息并在响应函数添加如下代码
+//GdiPngButtonDemoDlg.cpp源文件
+BOOL CGdiPngButtonDemoDlg::OnEraseBkgnd(CDC* pDC)
+{
+// TODO: Add your message handler code here and/or call default
+CDialog::OnEraseBkgnd(pDC);
+CRect rect;
+GetClientRect(rect);
+CMemDC pDevC(pDC, rect);
+if (m_hBitmap)
+{
+pDevC->SelectObject(m_hBitmap);
+}
+return TRUE;
+}
+
+Play/Pause
