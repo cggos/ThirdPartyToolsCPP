@@ -3,7 +3,7 @@
 #ifndef TYPECONVERT_H
 #define TYPECONVERT_H
 
-#define USE_MFC 0
+//#define USE_MFC 0
 #ifdef USE_MFC
 #include <afx.h>
 #endif
@@ -32,24 +32,26 @@ public:
 
     static int stdstring2intDec(std::string strDecimal);
 
-	/////////////////////Unicode»·¾³
 #ifdef _UNICODE
-	static std::string tchar2stdstring(wchar_t *wstr);
-        static std::wstring stdstring2stdwstring(std::string str);
-	static std::string wstring2utf8(std::wstring wstr);
+	static std::string	stdwstring2stdstring(const std::wstring& wstr);
+    static std::wstring stdstring2stdwstring(const std::string& str);
+
+	static std::string stdwstring2utf8(const std::wstring& wstr);
+
+	static void Utf8ToGBK(std::string &strUtf8);//????
+	static void GBKToUtf8(std::string &strGBK);
+
 	static std::wstring ANSIToUnicode(const std::string& str);
-	static std::string UnicodeToANSI(const std::wstring& str);
+	static std::string	UnicodeToANSI(const std::wstring& str);
 	static std::wstring UTF8ToUnicode(const std::string& str);
-	static std::string UnicodeToUTF8(const std::wstring& str);
+	static std::string	UnicodeToUTF8(const std::wstring& str);
+
 #endif
 
-	/////////////////////////////////MFC
 #ifdef USE_MFC
 	static std::string cstring2stdstring(CString cstring);
 	static int cstring2intDec(CString cstring);
-
 #endif
-
 };
 
 #endif // TYPECONVERT_H
