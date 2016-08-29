@@ -33,19 +33,15 @@ public:
     static int stdstring2intDec(std::string strDecimal);
 
 #ifdef _UNICODE
-	static std::string	stdwstring2stdstring(const std::wstring& wstr);
-    static std::wstring stdstring2stdwstring(const std::string& str);
+	//其中的Unicode即为UTF16编码
+	static std::wstring ANSIToUnicode(const std::string& strANSI);
+	static std::string	UnicodeToANSI(const std::wstring& wstrUnicode);  
 
-	static std::string stdwstring2utf8(const std::wstring& wstr);
+	static std::wstring UTF8ToUnicode(const std::string& strUTF8);
+	static std::string	UnicodeToUTF8(const std::wstring& wstrUnicode);
 
-	static void Utf8ToGBK(std::string &strUtf8);//????
-	static void GBKToUtf8(std::string &strGBK);
-
-	static std::wstring ANSIToUnicode(const std::string& str);
-	static std::string	UnicodeToANSI(const std::wstring& str);
-	static std::wstring UTF8ToUnicode(const std::string& str);
-	static std::string	UnicodeToUTF8(const std::wstring& str);
-
+	static std::string	ANSIToUTF8(const std::string& strANSI);
+	static std::string	UTF8ToANSI(const std::string& strUTF8);
 #endif
 
 #ifdef USE_MFC
