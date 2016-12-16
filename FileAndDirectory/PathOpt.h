@@ -1,6 +1,11 @@
 #pragma once
 
 #include <Windows.h>
+
+#include <io.h> 
+#include <direct.h>
+
+#include <string>
 #include <tchar.h>
 
 class PathOpt
@@ -16,5 +21,8 @@ public:
 public:
 	void GetDirectoryExe();
 	void GetDirectoryCurrent();
+
+	int CheckAndCreateDirectory(std::string strDir);
+	int CheckAndDeleteDirectory(std::string strDir);
 };
 

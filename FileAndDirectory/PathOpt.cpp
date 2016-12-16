@@ -34,4 +34,34 @@ void PathOpt::GetDirectoryCurrent()
 	GetCurrentDirectory(MAX_PATH, szDirCurrent);
 }
 
+int PathOpt::CheckAndCreateDirectory(std::string strDir)
+{
+	if (access(strDir.c_str(), 0) == -1)  
+	{  
+#ifdef WIN32  
+		int flag=mkdir(strDir.c_str());   
+#endif  
+#ifdef linux   
+		int flag=mkdir(dir.c_str(), 0777);  
+#endif  
 
+		return flag; //flag == 0, successfully
+	} 
+	else
+	{
+		return 1;
+	}
+}
+
+int PathOpt::CheckAndDeleteDirectory(std::string strDir)
+{
+	if (access(strDir.c_str(), 0) == 0)  
+	{   
+		int flag=rmdir(strDir.c_str());  
+		return flag; //flag == 0, successfully
+	}  
+	else
+	{
+		return 1;
+	}
+}
