@@ -34,6 +34,13 @@ void PathOpt::GetDirectoryCurrent()
 	GetCurrentDirectory(MAX_PATH, szDirCurrent);
 }
 
+void PathOpt::GetDirectoryByCSIDL(int csidl)
+{
+	if (SUCCEEDED(SHGetFolderPath(NULL, csidl|CSIDL_FLAG_CREATE, NULL, 0, szDirByCSIDL)))
+	{
+	}
+}
+
 int PathOpt::CheckAndCreateDirectory(std::string strDir)
 {
 	if (access(strDir.c_str(), 0) == -1)  
