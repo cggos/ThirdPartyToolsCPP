@@ -60,6 +60,35 @@ int PathOpt::CheckAndCreateDirectory(std::string strDir)
 	}
 }
 
+// 从左到右依次判断文件夹是否存在,不存在就创建
+// example: /home/root/mkdir/1/2/3/4/
+// 注意:最后一个如果是文件夹的话,需要加上 '\' 或者 '/'
+int PathOpt::CheckAndCreateDirectoryMultiLevel(const std::string strDir)
+{
+	size_t dirPathLen = strDir.length();
+	if (dirPathLen > MAX_PATH)
+	{
+		return -1;
+	}
+	char tmpDirPath[MAX_PATH] = { 0 };
+	for (size_t i = 0; i < dirPathLen; ++i)
+	{
+		tmpDirPath[i] = strDir[i];
+		if (tmpDirPath[i] == '\\' || tmpDirPath[i] == '/')
+		{
+			if (access(tmpDirPath, 0) != 0)
+			{
+				size_t ret = mkdir(tmpDirPath);
+				if (ret != 0)
+				{
+					return ret;
+				}
+			}
+		}
+	}
+	return 0;
+}
+
 int PathOpt::CheckAndDeleteDirectory(std::string strDir)
 {
 	if (access(strDir.c_str(), 0) == 0)  

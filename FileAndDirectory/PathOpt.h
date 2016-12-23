@@ -27,7 +27,8 @@ public:
 	void GetDirectoryCurrent();
 	void GetDirectoryByCSIDL(int csidl=CSIDL_LOCAL_APPDATA);
 
-	int CheckAndCreateDirectory(std::string strDir);
-	int CheckAndDeleteDirectory(std::string strDir);
+	int CheckAndCreateDirectory(const std::string strDir);
+	int CheckAndCreateDirectoryMultiLevel(const std::string strDir);
+	int CheckAndDeleteDirectory(const std::string strDir);
 };
 
