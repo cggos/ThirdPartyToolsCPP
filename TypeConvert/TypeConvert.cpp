@@ -5,6 +5,15 @@ TypeConvert::TypeConvert()
 
 }
 
+std::string TypeConvert::int2stdstring(int nData)
+{
+	std::stringstream ss;
+	std::string strData;
+	ss<<nData;
+	ss>>strData;
+	return strData;
+}
+
 std::string TypeConvert::intHex2stdstring(int nHex)
 {
     char charTemp[100];

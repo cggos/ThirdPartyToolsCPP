@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 #include <cmath>
+#include <sstream>
 #include <fstream>
 #include <utility>
 
@@ -25,6 +26,7 @@ public:
     ~TypeConvert();
 
 public:
+	static std::string int2stdstring(int nData);
     static std::string intHex2stdstring(int nHex);
     static std::string intDec2stdstring(int nDecimal);
     static std::string intNormal2stdstring(int nNormal);
