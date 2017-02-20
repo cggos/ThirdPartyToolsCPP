@@ -22,3 +22,15 @@ extern HHOOK g_hookKeyboard;
 
 LRESULT CALLBACK HookProcMouse(int nCode, WPARAM wP, LPARAM lP);
 LRESULT CALLBACK HookProcKeyboard(int nCode, WPARAM wP, LPARAM lP);
+
+//// π”√ΩÈ…‹
+//int main()
+//{
+//	HookUser hookUser;
+//	hookUser.InstallHook();
+//	hookUser.MsgLoop();
+//	hookUser.UninstallHook();
+//
+//	system("pause");
+//	return 0;
+//}
