@@ -8,11 +8,23 @@ MathFuncs::MathFuncs()
 //Function to return gcd of a and b
 //Greatest Common Divisor最大公约数
 //辗转相除法：辗转相除法是求两个自然数的最大公约数的一种方法，也叫欧几里德算法
-int MathFuncs::GCD(int a, int b)
+int MathFuncs::GCD(int m, int n)
 {
-    if (a == 0)
-        return b;
-    return GCD(b%a, a);
+	try
+	{
+		if (0==m | 0==n)
+		{
+			throw 0;
+		}
+	}
+	catch (int &e)
+	{
+		return 0;
+	}
+	int r = m % n;
+	if (0==r)
+		return n;
+    return GCD(n, r);
 }
 
 //A simple method to evaluate Euler Totient Function
