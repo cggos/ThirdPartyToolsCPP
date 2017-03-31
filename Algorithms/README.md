@@ -10,8 +10,3 @@
 * 在数论，对正整数n，欧拉函数是小于等于n的数中与n互质的数的数目；
 * Euler’s Totient Function：[http://www.geeksforgeeks.org/eulers-totient-function/](http://www.geeksforgeeks.org/eulers-totient-function/)
 * Fast Euler Totient Function in C++：[http://abhisharlives.blogspot.com/2013/03/euler-totient-function-in-3-ways.html](http://abhisharlives.blogspot.com/2013/03/euler-totient-function-in-3-ways.html)
-
-## Encryption and Decryption
-### RSA
-* RSA算法原理:[http://www.ruanyifeng.com/blog/2013/06/rsa_algorithm_part_one.html](http://www.ruanyifeng.com/blog/2013/06/rsa_algorithm_part_one.html)
-* 轻松学习RSA加密算法原理:[http://blog.csdn.net/sunmenggmail/article/details/11994013](http://blog.csdn.net/sunmenggmail/article/details/11994013)
