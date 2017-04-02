@@ -3,6 +3,7 @@
 
 ## GUID
 * [Online GUID Generator](https://guidgenerator.com/)
+* [系统CLSID简介和小技巧](http://www.cnblogs.com/boltkiller/articles/4791503.html)
 
 ## RSA
 * RSA算法原理:[http://www.ruanyifeng.com/blog/2013/06/rsa_algorithm_part_one.html](http://www.ruanyifeng.com/blog/2013/06/rsa_algorithm_part_one.html)
