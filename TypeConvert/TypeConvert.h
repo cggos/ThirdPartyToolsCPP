@@ -34,6 +34,27 @@ public:
 
     static int stdstring2intDec(std::string strDecimal);
 
+	//////////////////////////////////////////////////////////////////////////
+	//C++模板类中的静态成员函数需要在头文件里定义，否则会出现LNK2019，找不到所定义的函数
+	//任意类型的转换
+	template <typename output_type,typename input_type>
+	static output_type Convert(const input_type &input)
+	{
+		stringstream ss;
+		ss<<input;
+		output_type result;
+		ss>>result;
+		return result;
+	}
+	//使用实例：
+	//float n = 22.22;
+	//string strNum = "22.22";
+	//float f = Convert<float>(strNum);
+	//cout<<f<<endl;
+	//string ss = Convert<string>(n);
+	//cout<<ss<<endl;
+	//////////////////////////////////////////////////////////////////////////
+
 #ifdef _UNICODE
 	//其中的Unicode即为UTF16编码
 	static std::wstring ANSIToUnicode(const std::string& strANSI);
